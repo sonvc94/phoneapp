@@ -1,0 +1,33 @@
+version: '2'
+services:
+    phoneapp-app:
+        image: phoneapp
+        environment:
+            # - _JAVA_OPTIONS=-Xmx512m -Xms256m
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_DATA_MONGODB_URI=mongodb://phoneapp-mongodb:27017
+            - SPRING_DATA_MONGODB_DATABASE=phoneapp
+            - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=phoneapp-elasticsearch:9300
+            - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka
+            - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES=zookeeper
+        ports:
+            - 8080:8080
+    phoneapp-mongodb:
+        extends:
+            file: mongodb.yml
+            service: phoneapp-mongodb
+    phoneapp-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: phoneapp-elasticsearch
+    kafka:
+        extends:
+            file: kafka.yml
+            service: kafka
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka
+    zookeeper:
+        extends:
+            file: kafka.yml
+            service: zookeeper
